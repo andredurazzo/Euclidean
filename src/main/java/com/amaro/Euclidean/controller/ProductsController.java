@@ -3,6 +3,7 @@ package com.amaro.Euclidean.controller;
 
 import com.amaro.Euclidean.model.Product;
 import com.amaro.Euclidean.model.ProductRequest;
+import com.amaro.Euclidean.model.ProductSimilarity;
 import com.amaro.Euclidean.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,6 @@ public class ProductsController {
 
         return service.saveProducts(response.getProducts());
     }
-
-
     @GetMapping("/product")
     public List<Product> products() throws Exception{
         return service.getAllProducts();
@@ -31,6 +30,11 @@ public class ProductsController {
     @GetMapping("/product/{id}")
     public Product product(@PathVariable("id") Long id )throws Exception {
         return service.findById(id);
+    }
+
+    @GetMapping("/product/{id}/similarity")
+    public List<ProductSimilarity> similarities(@PathVariable("id") Long id ) throws Exception {
+        return service.getSimilarityProducts(id);
     }
 
     @GetMapping("tags")

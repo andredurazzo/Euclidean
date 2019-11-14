@@ -2,15 +2,13 @@ package com.amaro.Euclidean.service;
 
 import com.amaro.Euclidean.config.AmaroProperties;
 import com.amaro.Euclidean.model.Product;
-import com.amaro.Euclidean.model.ProductRequest;
+import com.amaro.Euclidean.model.ProductSimilarity;
 import com.amaro.Euclidean.repository.ProductRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -103,6 +101,45 @@ public class ProductServiceImpl implements ProductService {
                 }
         );
         return arrayTags;
+    }
+
+
+    @Override
+    public List<ProductSimilarity> getSimilarityProducts(Long id) throws Exception {
+        com.amaro.Euclidean.document.Product product = repository.findById(id).orElseThrow(Exception::new);
+        List<com.amaro.Euclidean.document.Product> allProducts = repository.findAll().parallelStream().filter(p -> !p.equals(product)).collect(Collectors.toList());
+
+
+        List<ProductSimilarity> productSimilarities = allProducts.stream()
+                .map(
+                        p -> ProductSimilarity
+                                .builder()
+                                .id(p.getId())
+                                .name(p.getName())
+                                .similarity(calculateSimilarity(product.getTagsVector(), p.getTagsVector())).build()
+                )
+                .sorted(Comparator.comparing(ProductSimilarity::getSimilarity).reversed())
+                .limit(3)
+                .collect(Collectors.toList());
+
+        return productSimilarities;
+
+    }
+
+    private Float calculateSimilarity(List<Integer> p1, List<Integer> p2 ){
+        Float d = 0.0F;
+
+        Float calc = 0.0F;
+
+        for(int i=0; i < p1.size(); i++){
+            calc += (float) Math.pow( (p1.get(i) - p2.get(i)),2);
+        }
+
+        d +=  (float)Math.sqrt(calc);
+
+        Float s = 1 /(1.0F + d);
+
+        return s;
     }
 
     @Override
