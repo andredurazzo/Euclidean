@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductResponse {
+public class ProductRequest {
 
     private List<Product> products;
 }

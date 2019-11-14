@@ -1,0 +1,30 @@
+
+amaro:
+  tags:
+    - neutro
+    - veludo
+    - couro
+    - basics
+    - festa
+    - workwear
+    - inverno
+    - boho
+    - estampas
+    - balada
+    - colorido
+    - casual
+    - liso
+    - moderno
+    - passeio
+    - metal
+    - viagem
+    - delicado
+    - descolado
+    - elastano
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: euclidean

@@ -16,4 +16,10 @@ public class Product {
     private Set<String> tags;
     private List<Integer> tagsVector;
 
+    public com.amaro.Euclidean.document.Product toEntity(){
+        return com.amaro.Euclidean.document.Product.builder().id(this.id)
+                .name(this.name)
+                .tags(this.tags)
+                .tagsVector(this.tagsVector).build();
+    }
 }
