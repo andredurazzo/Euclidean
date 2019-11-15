@@ -4,6 +4,7 @@ import com.amaro.Euclidean.config.AmaroProperties;
 import com.amaro.Euclidean.model.Product;
 import com.amaro.Euclidean.model.ProductSimilarity;
 import com.amaro.Euclidean.repository.ProductRepository;
+import static com.amaro.Euclidean.utils.VectorUtils.toVectorTag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,30 +37,6 @@ public class ProductServiceImpl implements ProductService {
                 ).collect(Collectors.toList());
 
     }
-
-    //        final BufferedReader br = new BufferedReader(new InputStreamReader(
-//                this.getClass().getResourceAsStream("/static/products.json")));
-//
-//        StringBuffer sb = new StringBuffer();
-//        String line;
-//        while ((line = br.readLine()) != null) {
-//            sb.append(line);
-//        }
-//
-//        ProductRequest productRequest = new ObjectMapper().readValue(sb.toString(), ProductRequest.class);
-//
-//        productRequest
-//                .getProducts()
-//                .forEach(
-//                        product ->
-//                        {
-//                            Integer[] arrayTags = toVectorTag(product);
-//                            product.setTagsVector( Arrays.asList(arrayTags));
-//                        }
-//                );
-//
-//
-//        return productRequest.getProducts();
     @Override
     public Product findById(Long id) throws Exception {
 
@@ -77,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
                 .map(
                         product ->
                         {
-                            product.setTagsVector(Arrays.asList(toVectorTag(product)));
+                            product.setTagsVector(Arrays.asList(toVectorTag(product, properties.getTags())));
                             return product.toEntity();
                         }
                 ).collect(Collectors.toList());
@@ -85,23 +62,6 @@ public class ProductServiceImpl implements ProductService {
         return products;
     }
 
-    private Integer[] toVectorTag(Product product) {
-        Set<String> tags = properties.getTags();
-        Integer[] arrayTags = new Integer[tags.size()];
-        Arrays.fill(arrayTags, 0);
-        product.getTags().forEach(
-                s -> {
-                    try {
-                        int index = tags.stream().collect(Collectors.toList()).indexOf(s);
-                        arrayTags[index] = 1;
-                    } catch (Exception e) {
-                        System.out.println("Tag not found:" + s);
-                    }
-
-                }
-        );
-        return arrayTags;
-    }
 
 
     @Override
